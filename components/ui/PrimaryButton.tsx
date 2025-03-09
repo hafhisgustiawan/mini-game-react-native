@@ -1,30 +1,35 @@
 import { ReactNode } from "react";
 import { Pressable, Text, StyleSheet } from "react-native";
 import type { PressableProps, ViewStyle } from "react-native";
+import Colors from "../../utils/colors";
+import { Ionicons } from "@expo/vector-icons";
 
 interface Props extends PressableProps {
   style?: ViewStyle;
   children?: ReactNode;
+  Icon?: typeof Ionicons;
 }
 
-const PrimaryButton: React.FC<Props> = (props) => {
+const PrimaryButton: React.FC<Props> = ({ Icon, ...props }) => {
   return (
     <Pressable
       {...props}
       style={({ pressed }) => [
         styles.container,
         props.style,
-        pressed && { backgroundColor: "#cccccc" },
+        pressed && { backgroundColor: Colors.gray300 },
       ]}
     >
-      <Text style={styles.colorWhite}>{props?.children}</Text>
+      {Icon && <Icon />}
+      <Text style={styles.textButton}>{props?.children}</Text>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    alignSelf: "center", //ini untuk width: 'wrap-content'
+    // alignSelf: "center", //ini untuk width: 'wrap-content'
+    justifyContent: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: "purple",
@@ -37,8 +42,11 @@ const styles = StyleSheet.create({
     minWidth: 120,
     alignItems: "center",
   },
-  colorWhite: {
+  textButton: {
     color: "white",
+    fontSize: 18,
+    textAlign: "center",
+    fontFamily: "Inter_900Black",
   },
 });
 

@@ -1,16 +1,75 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, View, Keyboard } from "react-native";
+import {
+  StyleSheet,
+  SafeAreaView,
+  Keyboard,
+  ImageBackground,
+} from "react-native";
 import StartGameScreen from "./screens/StartGameScreen";
 import { LinearGradient } from "expo-linear-gradient";
+import { useEffect, useState } from "react";
+import GameScreen from "./screens/GameScreen";
+import Colors from "./utils/colors";
+import GameOverScreen from "./screens/GameOverScreen";
+import * as SplashScreen from "expo-splash-screen";
+import { useFonts, Inter_900Black } from "@expo-google-fonts/inter";
+// import AppLoading from "expo-app-loading";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function App() {
+  const [fontsLoaded, fontsError] = useFonts({
+    Inter_900Black,
+  });
+  const [userNumber, setUserNumber] = useState<number>(0);
+  const [gameIsOver, setGameIsOver] = useState(false);
+
+  // if (!fontsLoaded) {
+  //   return <AppLoading />;
+  // }
+
+  useEffect(() => {
+    if (fontsLoaded || fontsError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontsError]);
+
+  if (!fontsLoaded && !fontsError) {
+    return null;
+  }
+
+  let screen = (
+    <StartGameScreen
+      setUserNumber={setUserNumber}
+      setGameIsOver={setGameIsOver}
+    />
+  );
+
+  if (userNumber) {
+    screen = (
+      <GameScreen userNumber={userNumber} setGameIsOver={setGameIsOver} />
+    );
+  }
+
+  if (gameIsOver) {
+    screen = <GameOverScreen />;
+  }
+
   return (
     <LinearGradient
-      colors={["#72063c", "#ddb52f"]}
+      colors={[Colors.primary500, Colors.secondary500]}
       style={styles.container}
       onTouchStart={() => Keyboard.dismiss()}
     >
-      <StartGameScreen />
+      <ImageBackground
+        source={require("./assets/images/background.png")}
+        resizeMode="cover"
+        style={styles.rootScreen}
+        imageStyle={styles.backgroundImage}
+      >
+        <SafeAreaView style={styles.rootScreen}>{screen}</SafeAreaView>
+        {/* safeareaview ini untuk membuat padding top nya agak tidak tertimpa oleh poni hp yang didetek secara otomatis */}
+      </ImageBackground>
       <StatusBar style="light" />
     </LinearGradient>
   );
@@ -19,8 +78,12 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1, //take as much space available in main axis (default column) flexbox
-    paddingTop: 80,
     // justifyContent: "flex-start", //default
-    padding: 16,
+  },
+  rootScreen: {
+    flex: 1,
+  },
+  backgroundImage: {
+    opacity: 0.15,
   },
 });

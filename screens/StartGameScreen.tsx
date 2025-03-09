@@ -1,31 +1,78 @@
-import { View, StyleSheet, TextInput } from "react-native";
-import PrimaryButton from "../components/PrimaryButton";
+import { View, StyleSheet, TextInput, Alert, Text } from "react-native";
+import PrimaryButton from "../components/ui/PrimaryButton";
+import { useState } from "react";
+import Colors from "../utils/colors";
+import Title from "../components/ui/Title";
 
-const StartGameScreen = () => {
+interface Props {
+  setUserNumber: React.Dispatch<React.SetStateAction<number>>;
+  setGameIsOver: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const StartGameScreen: React.FC<Props> = ({ setUserNumber, setGameIsOver }) => {
+  const [enteredNumber, setEnteredNumber] = useState("");
+
+  const resetInputHandler = () => {
+    setEnteredNumber("");
+  };
+
+  const submitInputHandler = () => {
+    const chosenNumber = parseInt(enteredNumber);
+
+    if (isNaN(chosenNumber) || chosenNumber <= 0 || chosenNumber > 99) {
+      Alert.alert(
+        "Invalid Number!",
+        "Number has to be a number between 1 and 99",
+        [{ text: "Okay", style: "destructive", onPress: resetInputHandler }]
+      );
+      return;
+    }
+
+    setUserNumber(chosenNumber);
+    setGameIsOver(false);
+  };
+
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={styles.numberInput}
-        keyboardType="number-pad"
-        maxLength={2}
-      />
-      <View style={styles.buttonContainer}>
-        <PrimaryButton style={{ flex: 1 }}>Reset</PrimaryButton>
-        <PrimaryButton style={{ flex: 1 }}>Start</PrimaryButton>
+    <View style={styles.root}>
+      <Title>Guess My Number</Title>
+
+      <View style={styles.container}>
+        <Text style={styles.instructionText}>Enter a number</Text>
+        <TextInput
+          style={styles.numberInput}
+          keyboardType="number-pad" //walaupun disini number, tapi tetap string
+          maxLength={2}
+          value={enteredNumber}
+          onChangeText={(val) => setEnteredNumber(val)}
+        />
+        <View style={styles.buttonContainer}>
+          <PrimaryButton
+            style={{ flex: 1, backgroundColor: Colors.primary300 }}
+            onPress={resetInputHandler}
+          >
+            Reset
+          </PrimaryButton>
+          <PrimaryButton style={{ flex: 1 }} onPress={submitInputHandler}>
+            Start
+          </PrimaryButton>
+        </View>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  root: {
+    gap: 24,
+  },
   container: {
-    width: "100%",
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#72063c",
+    alignItems: "stretch",
+    backgroundColor: Colors.primary500,
     borderRadius: 6,
     padding: 16,
     gap: 24,
+    margin: 16,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -36,10 +83,17 @@ const styles = StyleSheet.create({
     width: "30%",
     height: 50,
     fontSize: 32,
-    borderBottomColor: "#ddb52f",
+    borderBottomColor: Colors.secondary500,
     borderBottomWidth: 2,
     textAlign: "center",
-    color: "#ddb52f",
+    color: Colors.secondary500,
+    alignSelf: "center",
+  },
+  instructionText: {
+    color: Colors.secondary500,
+    alignSelf: "center",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
 
