@@ -12,7 +12,11 @@ import GameScreen from "./screens/GameScreen";
 import Colors from "./utils/colors";
 import GameOverScreen from "./screens/GameOverScreen";
 import * as SplashScreen from "expo-splash-screen";
-import { useFonts, Inter_900Black } from "@expo-google-fonts/inter";
+import {
+  useFonts,
+  Inter_900Black,
+  Inter_800ExtraBold,
+} from "@expo-google-fonts/inter";
 // import AppLoading from "expo-app-loading";
 
 SplashScreen.preventAutoHideAsync();
@@ -20,9 +24,11 @@ SplashScreen.preventAutoHideAsync();
 export default function App() {
   const [fontsLoaded, fontsError] = useFonts({
     Inter_900Black,
+    Inter_800ExtraBold,
   });
   const [userNumber, setUserNumber] = useState<number>(0);
   const [gameIsOver, setGameIsOver] = useState(false);
+  const [guessRounds, setGuessRounds] = useState(0);
 
   // if (!fontsLoaded) {
   //   return <AppLoading />;
@@ -38,6 +44,17 @@ export default function App() {
     return null;
   }
 
+  const gameOverHandler = (numberOfRounds: number) => {
+    setGameIsOver(true);
+    setGuessRounds(numberOfRounds);
+  };
+
+  const restartGame = () => {
+    setUserNumber(0);
+    setGuessRounds(0);
+    setGameIsOver(false);
+  };
+
   let screen = (
     <StartGameScreen
       setUserNumber={setUserNumber}
@@ -47,12 +64,18 @@ export default function App() {
 
   if (userNumber) {
     screen = (
-      <GameScreen userNumber={userNumber} setGameIsOver={setGameIsOver} />
+      <GameScreen userNumber={userNumber} onGameOver={gameOverHandler} />
     );
   }
 
   if (gameIsOver) {
-    screen = <GameOverScreen />;
+    screen = (
+      <GameOverScreen
+        userNumber={userNumber}
+        roundsNumber={guessRounds}
+        onStartNewGame={restartGame}
+      />
+    );
   }
 
   return (
