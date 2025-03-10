@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import Colors from "../../utils/colors";
 import { PropsWithChildren } from "react";
 
@@ -10,14 +10,17 @@ const NumberContainer: React.FC<PropsWithChildren> = ({ children }) => {
   );
 };
 
+//you can control size compare to device size
+const deviceWidth = Dimensions.get("window").width;
+
 const styles = StyleSheet.create({
   container: {
     width: "100%",
     borderWidth: 4,
     borderRadius: 8,
     borderColor: Colors.secondary500,
-    padding: 24,
-    margin: 24,
+    padding: deviceWidth < 380 ? 12 : 24,
+    margin: deviceWidth < 380 ? 12 : 24,
     justifyContent: "center",
     alignItems: "center",
   },
