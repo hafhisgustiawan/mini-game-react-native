@@ -1,4 +1,11 @@
-import { View, StyleSheet, TextInput, Alert, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  Alert,
+  Text,
+  useWindowDimensions,
+} from "react-native";
 import PrimaryButton from "../components/ui/PrimaryButton";
 import { useState } from "react";
 import Colors from "../utils/colors";
@@ -11,6 +18,8 @@ interface Props {
 
 const StartGameScreen: React.FC<Props> = ({ setUserNumber, setGameIsOver }) => {
   const [enteredNumber, setEnteredNumber] = useState("");
+  //this hook will watch if screen size change
+  const { width, height } = useWindowDimensions();
 
   const resetInputHandler = () => {
     setEnteredNumber("");
@@ -32,11 +41,12 @@ const StartGameScreen: React.FC<Props> = ({ setUserNumber, setGameIsOver }) => {
     setGameIsOver(false);
   };
 
+  const marginContainer = height < 480 ? 0 : 16;
+
   return (
     <View style={styles.root}>
       <Title>Guess My Number</Title>
-
-      <View style={styles.container}>
+      <View style={[styles.container, { margin: marginContainer }]}>
         <Text style={styles.instructionText}>Enter a number</Text>
         <TextInput
           style={styles.numberInput}
@@ -62,6 +72,9 @@ const StartGameScreen: React.FC<Props> = ({ setUserNumber, setGameIsOver }) => {
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+  },
   root: {
     gap: 24,
   },
@@ -72,7 +85,6 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     padding: 16,
     gap: 24,
-    margin: 16,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -81,7 +93,6 @@ const styles = StyleSheet.create({
   },
   numberInput: {
     width: "30%",
-    height: 50,
     fontSize: 32,
     borderBottomColor: Colors.secondary500,
     borderBottomWidth: 2,

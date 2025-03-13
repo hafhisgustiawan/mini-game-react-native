@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   Keyboard,
   ImageBackground,
+  Platform,
 } from "react-native";
 import StartGameScreen from "./screens/StartGameScreen";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,6 +21,8 @@ import {
 // import AppLoading from "expo-app-loading";
 
 SplashScreen.preventAutoHideAsync();
+
+//ketika mau membedakan component untuk tiap platform, maka tambahkan .<platform> di nama file nya. Misal, Title.android.js maka dia akan membedakan component untuk tiap platform dg otomatis. Selanjutnya tingga; panggil kayak biasa. Misal import Title from './Title.js'
 
 export default function App() {
   const [fontsLoaded, fontsError] = useFonts({
@@ -105,6 +108,8 @@ const styles = StyleSheet.create({
   },
   rootScreen: {
     flex: 1,
+    // paddingTop: Platform.OS === "android" ? 16 : 0,
+    paddingTop: Platform.select({ ios: 0, android: 16 }),
   },
   backgroundImage: {
     opacity: 0.15,
